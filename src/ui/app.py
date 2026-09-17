@@ -14,10 +14,13 @@ def load_stylesheet() -> str:
     except OSError:
         return ""
 
+def main():
+    app = QApplication([])
+    app.setStyleSheet(load_stylesheet())
+    app.setWindowIcon(QIcon(str(ICON_PATH)))
+    window = MainWindow()
+    window.show()
+    app.exec()
 
-app = QApplication([])
-app.setStyleSheet(load_stylesheet())
-app.setWindowIcon(QIcon(str(ICON_PATH)))
-window = MainWindow()
-window.show()
-app.exec()
+if __name__ == "__main__":
+    main()
