@@ -43,7 +43,7 @@ Novos menus serão adicionados conforme o desenvolvimento avançar.
 
 A interface será organizada em páginas:
 
-![Aquisição](resources/screenshots/tela_entrada.png)s
+![Aquisição](resources/screenshots/tela_entrada.png)
 
 ---
 
