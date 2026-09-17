@@ -43,25 +43,7 @@ Novos menus serão adicionados conforme o desenvolvimento avançar.
 
 A interface será organizada em páginas:
 
-```text
-┌──────────────────────────────────────────────────────┐
-│ Arquivo   Help                                        │
-├──────────────────────────────────────────────────────┤
-│ File Hasher                              ⚙ Config.  │
-├──────────────┬───────────────────────────────────────┤
-│              │                                       │
-│  Aquisição   │                                       │
-│              │                                       │
-│  Resultados  │         ÁREA PRINCIPAL                │
-│              │                                       │
-│  Histórico   │                                       │
-│              │                                       │
-│  Configurações│                                      │
-│              │                                       │
-├──────────────┴───────────────────────────────────────┤
-│ Status: Pronto                         v0.1.0        │
-└──────────────────────────────────────────────────────┘
-```
+![Aquisição](resources/screenshots/tela_entrada.png)s
 
 ---
 
