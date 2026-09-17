@@ -43,7 +43,7 @@ Novos menus serão adicionados conforme o desenvolvimento avançar.
 
 A interface será organizada em páginas:
 
-![Aquisição](resources/screenshots/tela_entrada.png)s
+![Aquisição](resources/screenshots/tela_entrada.png)
 
 ---
 
@@ -53,18 +53,7 @@ A interface será organizada em páginas:
 
 O operador informa a URL:
 
-```text
-┌─────────────────────────────────────────────────────┐
-│ Nova aquisição                                      │
-│                                                     │
-│ URL                                                 │
-│ ┌─────────────────────────────────────────────────┐ │
-│ │ https://exemplo.com/documentos/                 │ │
-│ └─────────────────────────────────────────────────┘ │
-│                                                     │
-│              [ Analisar URL ]                       │
-└─────────────────────────────────────────────────────┘
-```
+![Analisar URL](resources/screenshots/aquisição.png)
 
 ---
 
