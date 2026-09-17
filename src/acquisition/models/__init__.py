@@ -1,0 +1,4 @@
+from .acquisition_result import AcquisitionResult
+from .acquisition_request import AcquisitionRequest
+from .discovered_file import DiscoveredFile
+from .download_result import DownloadResult

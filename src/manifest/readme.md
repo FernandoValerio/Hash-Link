@@ -1,0 +1,1 @@
+Manifest module v2.1 with builder, writer, validator and serializer.

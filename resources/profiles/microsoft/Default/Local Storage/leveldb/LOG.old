@@ -1,0 +1,6 @@
+2026/09/17-14:12:05.493 6034 Reusing MANIFEST E:\Projetos\hash_link\resources\profiles\microsoft\Default\Local Storage\leveldb/MANIFEST-000001
+2026/09/17-14:12:05.498 6034 Recovering log #4
+2026/09/17-14:12:05.500 6034 Reusing old log E:\Projetos\hash_link\resources\profiles\microsoft\Default\Local Storage\leveldb/000004.log 
+2026/09/17-14:13:05.509 26d0 Level-0 table #7: started
+2026/09/17-14:13:05.561 26d0 Level-0 table #7: 42352 bytes OK
+2026/09/17-14:13:05.593 26d0 Delete type=0 #4
