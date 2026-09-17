@@ -1,5 +1,7 @@
 from playwright.sync_api import sync_playwright
 from pathlib import Path
+import subprocess
+import sys
 
 from bs4 import BeautifulSoup
 
@@ -72,7 +74,41 @@ class SessionManager:
 class PlaywrightLoader:
 
     @staticmethod
+    def ensure_playwright():
+
+        try:
+
+            from playwright.sync_api import (
+                sync_playwright
+            )
+
+            with sync_playwright() as p:
+
+                browser = p.chromium.launch()
+
+                browser.close()
+
+            return True
+
+        except Exception:
+
+            subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "playwright",
+                    "install",
+                    "chromium",
+                ],
+                check=True
+            )
+
+            return True
+
+    @staticmethod
     def load(url: str, profile: str | None = None) -> str:
+        PlaywrightLoader.ensure_playwright()
+
         profile = profile or resolve_profile(url)
 
         if profile:
