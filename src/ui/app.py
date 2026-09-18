@@ -3,9 +3,10 @@ from pathlib import Path
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 from src.ui.main_window import MainWindow
+from src.ui.resource_utils import resource_path
 
-STYLE_PATH = Path(__file__).parent / "assets" / "style.qss"
-ICON_PATH = Path(__file__).parent / "assets" / "icon.ico"
+STYLE_PATH = resource_path("assets/style.qss")
+ICON_PATH = resource_path("assets/icon.ico")
 
 
 def load_stylesheet() -> str:
