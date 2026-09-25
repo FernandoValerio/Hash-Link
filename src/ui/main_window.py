@@ -21,20 +21,23 @@ from src.ui.pages.acquisition_page import AcquisitionPage
 from src.ui.pages.history_page import HistoryPage
 from src.ui.pages.results_page import ResultsPage
 from src.ui.pages.settings_page import SettingsPage
+from src.ui.pages.metadata_page import MetadataPage
 
-APP_VERSION = "0.1.0"
+APP_VERSION = "0.1.1"
 
 # Índices das páginas — usados pela navegação lateral e pelos itens de menu.
 TAB_ACQUISITION = 0
 TAB_RESULTS = 1
 TAB_HISTORY = 2
 TAB_SETTINGS = 3
+TAB_EXIF = 4
 
 NAV_ITEMS = [
     ("Aquisição", "Analisar uma URL e selecionar arquivos"),
     ("Resultados", "Hashes calculados nesta sessão"),
     ("Histórico", "Aquisições anteriores"),
     ("Configurações", "Preferências do aplicativo"),
+    ("Metadata","Metadados dos arquivos"),
 ]
 
 
@@ -115,15 +118,18 @@ class MainWindow(QMainWindow):
 
         self.stack = QStackedWidget()
 
+        self.metadata_page = MetadataPage()
         self.results_page = ResultsPage()
-        self.acquisition_page = AcquisitionPage(self.results_page)
+        self.acquisition_page = AcquisitionPage(self.results_page, self.metadata_page)
         self.history_page = HistoryPage()
         self.settings_page = SettingsPage()
+
 
         self.stack.addWidget(self.acquisition_page)
         self.stack.addWidget(self.results_page)
         self.stack.addWidget(self.history_page)
         self.stack.addWidget(self.settings_page)
+        self.stack.addWidget(self.metadata_page)
 
         stack_container = QWidget()
         stack_layout = QVBoxLayout(stack_container)

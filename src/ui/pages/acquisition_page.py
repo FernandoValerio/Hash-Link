@@ -37,9 +37,10 @@ def _card() -> QFrame:
 
 
 class AcquisitionPage(QWidget):
-    def __init__(self, results_page):
+    def __init__(self, results_page, metadata_page):
         super().__init__()
         self.results_page = results_page
+        self.metadata_page = metadata_page
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -278,10 +279,12 @@ class AcquisitionPage(QWidget):
 
             if checkbox.isChecked():
                 selected_files.append(file)
+
         for file in selected_files:
             self.progress_bar.setValue(0)
             destination = Path(OUTPUT) / file.name
             self._materialize(file, destination)
+            self.metadata_page.add_file(destination)
             print(f'baixado: {file.name}')
 
     def progress(self, got, total):
@@ -310,7 +313,8 @@ class AcquisitionPage(QWidget):
                 selected_files.append(
                     file
                 )
-        hash_tipe = "SHA-256"
+        hash_tipeA = "MD5"
+        hash_tipeB = "SHA-256"
         for file in selected_files:
             destination = Path(HASH) / file.name
             self._materialize(file, destination)
@@ -319,12 +323,12 @@ class AcquisitionPage(QWidget):
 
             if not local_file.exists():
                 continue
-
-            hash_value = calculate_hash(local_file, hash_tipe)
+            hash_A = calculate_hash(local_file, hash_tipeA)
+            hash_B = calculate_hash(local_file, hash_tipeB)
             self.results_page.add_result(
                 file.name,
-                hash_tipe,
-                hash_value
+                hash_A,
+                hash_B
             )
 
         print(selected_files)
