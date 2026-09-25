@@ -1,6 +1,8 @@
-venv_hash/
+venv/
 output/
 logs/
+build/
+dist/
 resources/profiles/
 __pycache__/
 *.pyc

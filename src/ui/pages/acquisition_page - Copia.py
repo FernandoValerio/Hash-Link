@@ -1,4 +1,3 @@
-import shutil
 from requests import Session
 from pathlib import Path
 
@@ -18,7 +17,6 @@ from PySide6.QtWidgets import (
     QProgressBar,
     QHeaderView,
     QSizePolicy,
-    QFileDialog,
 )
 
 from src.services.workflow_service import WorkflowService
@@ -58,9 +56,7 @@ class AcquisitionPage(QWidget):
             exports=None,
         )
 
-        self.analyse.clicked.connect(self.analyse_source)
-        self.browse_file_button.clicked.connect(self.browse_file)
-        self.browse_folder_button.clicked.connect(self.browse_folder)
+        self.analyse.clicked.connect(self.analyse_url)
         self.download_button.clicked.connect(self.download_selected)
         self.hash_button.clicked.connect(self.hash_selected)
 
@@ -77,10 +73,7 @@ class AcquisitionPage(QWidget):
         title.setProperty("class", "CardTitle")
         inner.addWidget(title)
 
-        hint = QLabel(
-            "Informe uma URL ou um caminho local (arquivo ou pasta) para descobrir "
-            "os arquivos disponíveis. O tipo é reconhecido automaticamente."
-        )
+        hint = QLabel("Informe a URL a ser analisada para descobrir os arquivos disponíveis.")
         hint.setProperty("class", "CardHint")
         inner.addWidget(hint)
 
@@ -88,23 +81,11 @@ class AcquisitionPage(QWidget):
         row.setSpacing(10)
 
         self.url = QLineEdit()
-        self.url.setPlaceholderText("https://... ou C:\\caminho\\arquivo (ou pasta)")
+        self.url.setPlaceholderText("https://...")
         self.url.setMinimumHeight(38)
         row.addWidget(self.url, stretch=1)
 
-        self.browse_file_button = QPushButton("📄 Arquivo...")
-        self.browse_file_button.setObjectName("SecondaryButton")
-        self.browse_file_button.setMinimumHeight(38)
-        self.browse_file_button.setCursor(Qt.PointingHandCursor)
-        row.addWidget(self.browse_file_button)
-
-        self.browse_folder_button = QPushButton("📁 Pasta...")
-        self.browse_folder_button.setObjectName("SecondaryButton")
-        self.browse_folder_button.setMinimumHeight(38)
-        self.browse_folder_button.setCursor(Qt.PointingHandCursor)
-        row.addWidget(self.browse_folder_button)
-
-        self.analyse = QPushButton("🔍  Analisar")
+        self.analyse = QPushButton("🔍  Analisar URL")
         self.analyse.setObjectName("PrimaryButton")
         self.analyse.setMinimumHeight(38)
         self.analyse.setCursor(Qt.PointingHandCursor)
@@ -145,8 +126,7 @@ class AcquisitionPage(QWidget):
         inner.addWidget(self.output, stretch=1)
 
         self.empty_state_label = QLabel(
-            "Nenhum arquivo listado ainda.\n"
-            "Informe uma URL ou um caminho local acima e clique em “Analisar”."
+            "Nenhum arquivo listado ainda.\nInforme uma URL acima e clique em “Analisar URL”."
         )
         self.empty_state_label.setProperty("class", "EmptyState")
         self.empty_state_label.setAlignment(Qt.AlignCenter)
@@ -194,25 +174,15 @@ class AcquisitionPage(QWidget):
         self.output.setVisible(not is_empty)
 
     # ------------------------------------------------------------------
-    # Lógica
+    # Lógica (inalterada em relação à versão original)
     # ------------------------------------------------------------------
-    def browse_file(self):
-        path, _ = QFileDialog.getOpenFileName(self, "Selecionar arquivo")
-        if path:
-            self.url.setText(path)
-
-    def browse_folder(self):
-        path = QFileDialog.getExistingDirectory(self, "Selecionar pasta")
-        if path:
-            self.url.setText(path)
-
-    def analyse_source(self):
-        source = self.url.text().strip()
+    def analyse_url(self):
+        url = self.url.text().strip()
 
         try:
             service = AcquisitionService()
 
-            result = service.analyse(source)
+            result = service.analyse(url)
 
             self.output.setRowCount(len(result.discovered_files))
 
@@ -242,24 +212,6 @@ class AcquisitionPage(QWidget):
             self.empty_state_label.setText(f"Erro:\n{exc}")
             self._update_empty_state(True)
 
-    def _materialize(self, file, destination: Path):
-        """Coloca o conteúdo de `file` em `destination`: baixa via HTTP se for um
-        link, ou copia do disco (preservando metadados, com copy2) se `file` for
-        local — reconhecido por `file.is_local`."""
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        if file.is_local:
-            shutil.copy2(file.local_path, destination)
-            self.progress_bar.setValue(100)
-        else:
-            session = Session()
-            downloader = Downloader()
-            downloader.download(
-                session=session,
-                url=file.url,
-                destination=str(destination),
-                callback=self.progress,
-            )
-
     def download_selected(self):
 
         if self.current_result is None:
@@ -278,10 +230,12 @@ class AcquisitionPage(QWidget):
 
             if checkbox.isChecked():
                 selected_files.append(file)
+        session = Session()
+        downloader = Downloader()
         for file in selected_files:
             self.progress_bar.setValue(0)
-            destination = Path(OUTPUT) / file.name
-            self._materialize(file, destination)
+            destination = f'{OUTPUT}\\{file.name}'
+            downloader.download(session=session, url=file.url, destination=destination, callback=self.progress)
             print(f'baixado: {file.name}')
 
     def progress(self, got, total):
@@ -310,12 +264,15 @@ class AcquisitionPage(QWidget):
                 selected_files.append(
                     file
                 )
+        session = Session()
+        downloader = Downloader()
         hash_tipe = "SHA-256"
         for file in selected_files:
-            destination = Path(HASH) / file.name
-            self._materialize(file, destination)
+            destination = f'{HASH}\\{file.name}'
+            downloader.download(session=session, url=file.url, destination=destination, callback=self.progress)
         for file in selected_files:
-            local_file = Path(HASH) / file.name
+            local_file = (
+                Path(f'{HASH}\\{file.name}'))
 
             if not local_file.exists():
                 continue
